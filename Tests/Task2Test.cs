@@ -102,5 +102,28 @@ namespace Tests
             mockBasicMaths.Verify(m => m.Divide(intermediate, input3), Times.Once());
             result.Should().Be(expected);
         }
+
+        [Test, Description("MultiplyAndDivide invokes Multiply method and Divide method from mockBasicMaths and returns a value of 2.4")]
+        [TestCase(3, 4, 0, 12, 2.4)]
+        public void MultiplyAndDivideTestForDivideBy0(int input1, int input2, int input3, int intermediate, double expected)
+        {
+            // Arrange
+            var BasicMaths = new BasicMaths();
+
+            var mockBasicMaths = new Mock<IBasicMaths>();
+
+            mockBasicMaths.Setup(c => c.Divide(intermediate, input3)).Throws(new ArgumentOutOfRangeException(nameof(input3)));
+
+            mockBasicMaths.Setup(m => m.Multiply(input1, input2)).Returns(BasicMaths.Multiply(input1, input2));
+
+            var AdvancedMath = new AdvancedMaths(mockBasicMaths.Object);
+
+            ////Assert
+            //mockBasicMaths.Verify(m => m.Multiply(input1, input2), Times.Once());
+            //mockBasicMaths.Verify(m => m.Divide(intermediate, input3), Times.Once());
+            //result.Should().Be(expected);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => AdvancedMath.MultiplyAndDivide(input1, input2, input3));
+        }
     }
 }
